@@ -8,15 +8,13 @@ using Jypeli.Widgets;
 
 public class AmmuntaPeli : PhysicsGame
 {
-    Double nopeusYlos = 200;
-    Double nopeusAlas =  -200;
+
     Double nopeusVasen = -200;
     Double nopeusOikea = 200;
 
     Image Pelaajankuva1 = LoadImage("Pelaaja1");
     Image Pelaajankuva2 = LoadImage("Pelaaja2");
-    //Image Pelaajankuva1 = LoadImage("Pelaaja12");
-    //Image Pelaajankuva2 = LoadImage("Pelaaja22");
+    Image Tiilinkuva = LoadImage("Tiili");
     Image Taustakuva = LoadImage("War Game");
 
     PlatformCharacter pelaaja1;
@@ -39,11 +37,22 @@ void LuoKentta()
 {
     Level.Background.Image = Taustakuva;
     Level.Background.FitToLevel();
-    Level.BackgroundColor = Color.Black;
+    //Level.BackgroundColor = Color.Black;
+    //1. Luetaan kuva uuteen ColorTileMappiin, kuvan nimen perässä ei .png-päätettä.
+    ColorTileMap ruudut = ColorTileMap.FromLevelAsset("kentta");
 
-    pelaaja1 = LuoPelaaja1(Level.Left + 90.0, -70.0);
-    pelaaja2 = LuoPelaaja2(Level.Left + 800.0, -70.0);
-     
+    //2. Kerrotaan mitä aliohjelmaa kutsutaan, kun tietyn värinen pikseli tulee vastaan kuvatiedostossa.
+    ruudut.SetTileMethod(Color.FromHexCode("000CFF"), LuoPelaaja1);
+    ruudut.SetTileMethod(Color.Black, LuoTaso);
+   
+    ruudut.SetTileMethod(Color.Red, LuoPelaaja2);
+
+    //3. Execute luo kentän
+    //   Parametreina leveys ja korkeus
+    ruudut.Execute(25, 25);
+
+
+    Gravity = new Vector(0, -1000);
     vasenReuna = Level.CreateLeftBorder();
     vasenReuna.Restitution = 1.0;
     vasenReuna.KineticFriction = 0.0;
@@ -67,48 +76,54 @@ void LuoKentta()
 
 }
 
-PlatformCharacter LuoPelaaja1(double x, double y)
+void LuoTaso(Vector paikka, double leveys, double korkeus)
 {
-    pelaaja1 = new PlatformCharacter(150.0, 150.0);
-    pelaaja1.Image = Pelaajankuva1;
-    pelaaja1.X = x;
-    pelaaja1.Y = y;
-    pelaaja1.Restitution = 1.0;
-    pelaaja1.KineticFriction = 0.0;
-    Add(pelaaja1);
-    return pelaaja1;
+    PhysicsObject taso = PhysicsObject.CreateStaticObject(leveys, korkeus);
+    taso.Position = paikka;
+    taso.Image = Tiilinkuva;
+    taso.CollisionIgnoreGroup = 1;
+    Add(taso);
 }
 
-PlatformCharacter LuoPelaaja2(double x, double y)
+
+void LuoPelaaja1(Vector paikka, double korkeus, double leveys)
 {
-    pelaaja2 = new PlatformCharacter(150.0, 150.0);
+    pelaaja1 = new PlatformCharacter(75.0, 75.0);
+    pelaaja1.Image = Pelaajankuva1;
+    pelaaja1.Position = paikka;
+    
+    Add(pelaaja1);
+ 
+}
+
+void LuoPelaaja2(Vector paikka, double korkeus, double leveys)
+{
+    pelaaja2 = new PlatformCharacter(75.0, 75.0);
     pelaaja2.Image = Pelaajankuva2;
-    pelaaja2.X = x;
-    pelaaja2.Y = y;
-    pelaaja2.Restitution = 1.0;
-    pelaaja2.KineticFriction = 0.0;
+    pelaaja2.Position = paikka;
+    
     Add(pelaaja2);
-    return pelaaja2;
+
 }
 void AsetaOhjaimet()
 {
-    Keyboard.Listen(Key.W, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1, nopeusYlos);
-    Keyboard.Listen(Key.W, ButtonState.Released, AsetaNopeus, null, pelaaja1, Double.Zero);
-    Keyboard.Listen(Key.S, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa alas", pelaaja1, nopeusAlas);
-    Keyboard.Listen(Key.S, ButtonState.Released, AsetaNopeus, null, pelaaja1, Double.Zero);
-    Keyboard.Listen(Key.A, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1, nopeusVasen);
-    Keyboard.Listen(Key.A, ButtonState.Released, AsetaNopeus, null, pelaaja1, Double.Zero);
-    Keyboard.Listen(Key.D, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa alas", pelaaja1, nopeusOikea);
-    Keyboard.Listen(Key.D, ButtonState.Released, AsetaNopeus, null, pelaaja1, Double.Zero);
+    Keyboard.Listen(Key.W, ButtonState.Down, Hyppy, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1);
+  
 
-    Keyboard.Listen(Key.Up, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2, nopeusYlos);
-    Keyboard.Listen(Key.Up, ButtonState.Released, AsetaNopeus, null, pelaaja2, Double.Zero);
-    Keyboard.Listen(Key.Down, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa alas", pelaaja2, nopeusAlas);
-    Keyboard.Listen(Key.Down, ButtonState.Released, AsetaNopeus, null, pelaaja2, Double.Zero);
+ 
+    Keyboard.Listen(Key.A, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1, nopeusVasen);
+ 
+    Keyboard.Listen(Key.D, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa alas", pelaaja1, nopeusOikea);
+   
+
+    Keyboard.Listen(Key.Up, ButtonState.Down, Hyppy, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2);
+
+
+   
     Keyboard.Listen(Key.Left, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2, nopeusVasen);
-    Keyboard.Listen(Key.Left, ButtonState.Released, AsetaNopeus, null, pelaaja2, Double.Zero);
+   
     Keyboard.Listen(Key.Right, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa alas", pelaaja2, nopeusOikea);
-    Keyboard.Listen(Key.Right, ButtonState.Released, AsetaNopeus, null, pelaaja2, Double.Zero);
+
 
     PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
     Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
@@ -116,30 +131,15 @@ void AsetaOhjaimet()
 }
 void AsetaNopeus(PlatformCharacter pelaaja, Double nopeus)
 {
-    if ((nopeus.Y < 0) && (pelaaja.Bottom < Level.Bottom))
-    {
-        pelaaja.Walk = Double.Zero;
-        return;
-    }
-    if ((nopeus.Y > 0) && (pelaaja.Top > Level.Top))
-    {
-        pelaaja.Velocity = Double.Zero;
-        return;
-    }
-    if ((nopeus.X > 0) && (pelaaja.Right > Level.Right))
-    {
-        pelaaja.Velocity = Double.Zero;
-        return;
-    }
-    if ((nopeus.X < 0) && (pelaaja.Left < Level.Left))
-    {
-        pelaaja.Velocity = Double.Zero;
-        return;
-    }
 
-    pelaaja.Velocity = nopeus;
+    pelaaja.Walk(nopeus);
 }
 
+void Hyppy(PlatformCharacter pelaaja)
+{
+    pelaaja.Jump(700);
+
+}
 
 
 

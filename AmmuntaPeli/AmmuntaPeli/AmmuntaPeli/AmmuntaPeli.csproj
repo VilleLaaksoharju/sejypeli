@@ -110,8 +110,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ohjelma.cs" />
     <Compile Include="AmmuntaPeli.cs" />
+    <Compile Include="Ohjelma.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
