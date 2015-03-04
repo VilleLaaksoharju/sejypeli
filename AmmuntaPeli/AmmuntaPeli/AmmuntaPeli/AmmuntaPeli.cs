@@ -8,17 +8,27 @@ using Jypeli.Widgets;
 
 public class AmmuntaPeli : PhysicsGame
 {
+    
+
+
 
     Double nopeusVasen = -200;
     Double nopeusOikea = 200;
 
     Image Pelaajankuva1 = LoadImage("Pelaaja1");
     Image Pelaajankuva2 = LoadImage("Pelaaja2");
+    Image Pelaajankuva3 = LoadImage("Pelaaja3");
+    Image Pelaajankuva4 = LoadImage("Pelaaja4");
     Image Tiilinkuva = LoadImage("Tiili");
     Image Taustakuva = LoadImage("War Game");
+    Image PointNotCaptureKuva = LoadImage("PointNotCapture");
+
 
     PlatformCharacter pelaaja1;
     PlatformCharacter pelaaja2;
+    PlatformCharacter pelaaja3;
+    PlatformCharacter pelaaja4;
+
 
     PhysicsObject vasenReuna;
     PhysicsObject oikeaReuna;
@@ -30,11 +40,22 @@ LuoKentta();
 AsetaOhjaimet();
 
 
+
+
     }
+
+ 
+
 
 void LuoKentta()
 
 {
+    MultiSelectWindow alkuValikko = new MultiSelectWindow("Pelin alkuvalikko",
+"Taisteluun>:)", "Parhaat pisteet :P ", "Poistu Pelistä >:(");
+    alkuValikko.Color = Color.Black;
+
+
+    Add(alkuValikko);
     Level.Background.Image = Taustakuva;
     Level.Background.FitToLevel();
     //Level.BackgroundColor = Color.Black;
@@ -46,6 +67,9 @@ void LuoKentta()
     ruudut.SetTileMethod(Color.Black, LuoTaso);
    
     ruudut.SetTileMethod(Color.Red, LuoPelaaja2);
+    ruudut.SetTileMethod(Color.FromHexCode("00FFFF"), LuoPelaaja3);
+    ruudut.SetTileMethod(Color.FromHexCode("FF00DC"), LuoPelaaja4);
+    
 
     //3. Execute luo kentän
     //   Parametreina leveys ja korkeus
@@ -73,6 +97,7 @@ void LuoKentta()
         alaReuna.IsVisible = false;
         alaReuna.KineticFriction = 0.0;
         Camera.ZoomToLevel();
+        
 
 }
 
@@ -84,6 +109,7 @@ void LuoTaso(Vector paikka, double leveys, double korkeus)
     taso.CollisionIgnoreGroup = 1;
     Add(taso);
 }
+
 
 
 void LuoPelaaja1(Vector paikka, double korkeus, double leveys)
@@ -105,24 +131,61 @@ void LuoPelaaja2(Vector paikka, double korkeus, double leveys)
     Add(pelaaja2);
 
 }
+
+void LuoPelaaja3(Vector paikka, double korkeus, double leveys)
+{
+    pelaaja3 = new PlatformCharacter(75.0, 75.0);
+    pelaaja3.Image = Pelaajankuva3;
+    pelaaja3.Position = paikka;
+
+    Add(pelaaja3);
+
+}
+void LuoPelaaja4(Vector paikka, double korkeus, double leveys)
+{
+    pelaaja4 = new PlatformCharacter(75.0, 75.0);
+    pelaaja4.Image = Pelaajankuva4;
+    pelaaja4.Position = paikka;
+
+    Add(pelaaja4);
+
+}
 void AsetaOhjaimet()
 {
     Keyboard.Listen(Key.W, ButtonState.Down, Hyppy, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1);
-  
-
  
     Keyboard.Listen(Key.A, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1, nopeusVasen);
  
     Keyboard.Listen(Key.D, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa alas", pelaaja1, nopeusOikea);
-   
+
+    ;
+
 
     Keyboard.Listen(Key.Up, ButtonState.Down, Hyppy, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2);
 
-
+    
    
     Keyboard.Listen(Key.Left, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2, nopeusVasen);
    
     Keyboard.Listen(Key.Right, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa alas", pelaaja2, nopeusOikea);
+
+
+    Keyboard.Listen(Key.I, ButtonState.Down, Hyppy, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3);
+
+    Keyboard.Listen(Key.J, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3, nopeusVasen);
+
+    Keyboard.Listen(Key.L, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa alas", pelaaja3, nopeusOikea);
+
+    
+
+
+    Keyboard.Listen(Key.T, ButtonState.Down, Hyppy, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4);
+
+    Keyboard.Listen(Key.H, ButtonState.Down, AsetaNopeus, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4, nopeusVasen);
+
+    Keyboard.Listen(Key.F, ButtonState.Down, AsetaNopeus, "Pelaaja 4: Liikuta mailaa alas", pelaaja4, nopeusOikea);
+
+    
 
 
     PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
