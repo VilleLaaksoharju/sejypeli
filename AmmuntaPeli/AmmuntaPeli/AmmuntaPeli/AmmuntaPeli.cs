@@ -8,8 +8,6 @@ using Jypeli.Widgets;
 
 public class AmmuntaPeli : PhysicsGame
 {
-    
-
 
     Vector pelaaja1alku;
     Vector pelaaja2alku;
@@ -43,22 +41,14 @@ public class AmmuntaPeli : PhysicsGame
 LuoKentta();
 AsetaOhjaimet();
 
-
-
-
-
-
     }
-
- 
-
 
 void LuoKentta()
 
 {
-    MultiSelectWindow alkuValikko = new MultiSelectWindow("Pelin alkuvalikko",
+    MultiSelectWindow alkuValikko = new MultiSelectWindow("Ammunta Peli",
 "Taisteluun>:)", "Parhaat pisteet :P ", "Poistu Pelistä >:(");
-    alkuValikko.Color = Color.Black;
+    alkuValikko.Color = Color.Blue;
 
 
     Add(alkuValikko);
@@ -71,11 +61,11 @@ void LuoKentta()
     //2. Kerrotaan mitä aliohjelmaa kutsutaan, kun tietyn värinen pikseli tulee vastaan kuvatiedostossa.
     ruudut.SetTileMethod(Color.FromHexCode("000CFF"), LuoPelaaja1);
     ruudut.SetTileMethod(Color.Black, LuoTaso);
-   
+    ruudut.SetTileMethod(Color.FromHexCode("00FF21"), LuoPointNotCapture);
     ruudut.SetTileMethod(Color.Red, LuoPelaaja2);
     ruudut.SetTileMethod(Color.FromHexCode("00FFFF"), LuoPelaaja3);
     ruudut.SetTileMethod(Color.FromHexCode("FF00DC"), LuoPelaaja4);
-    //ruudut.SetTileMethod(Color.FromHexCode("FFFFFF"), LuoPointNotCapture);
+   
     
     
 
@@ -117,17 +107,15 @@ void LuoTaso(Vector paikka, double leveys, double korkeus)
     taso.CollisionIgnoreGroup = 1;
     Add(taso);
 }
-//void LuoPointNotCapture(Vector paikka, double leveys, double korkeus)
-//{
-    //PhysicsObject PointNotCapture = PhysicsObject.CreateStaticObject(leveys, korkeus);
-   // PointNotCapture.Position = paikka;
-    //PointNotCapture.Image = PointNotCapturenkuva;
-    //PointNotCapture.CollisionIgnoreGroup = 1;
-    //Add(PointNotCapture);
-//}
 
-
-
+void LuoPointNotCapture(Vector paikka, double leveys, double korkeus)
+{
+    PhysicsObject pointNotCapture = PhysicsObject.CreateStaticObject(50, 50);
+    pointNotCapture.Position = paikka;
+    pointNotCapture.Image = PointNotCapturenkuva;
+    //pointNotCapture.CollisionIgnoreGroup = 1;
+    Add(pointNotCapture,2);
+}
 
 
 void LuoPelaaja1(Vector paikka, double korkeus, double leveys)
@@ -135,7 +123,6 @@ void LuoPelaaja1(Vector paikka, double korkeus, double leveys)
     
     pelaaja1 = new PlatformCharacter(75.0, 75.0);
     pelaaja1.Weapon = new AssaultRifle(50, 50);
-    
     pelaaja1.Weapon.InfiniteAmmo = true;
     pelaaja1.Weapon.IsVisible = false;
     pelaaja1.Weapon.X = 1.0;
@@ -146,18 +133,20 @@ void LuoPelaaja1(Vector paikka, double korkeus, double leveys)
     pelaaja1.Image = Pelaajankuva1;
     pelaaja1.Position = paikka;
     pelaaja1.Tag = "p1";
-    Add(pelaaja1);
-    pelaaja1alku=paikka;
+    Add(pelaaja1);a1
+    pelaajalku=paikka;
  
 }
 
 void LuoPelaaja2(Vector paikka, double korkeus, double leveys)
 {
     pelaaja2 = new PlatformCharacter(75.0, 75.0);
+    pelaaja2.Weapon.InfiniteAmmo = true;
     pelaaja2.Image = Pelaajankuva2;
     pelaaja2.Position = paikka;
     pelaaja2.Weapon = new AssaultRifle(50, 50);
     pelaaja2.Weapon.Ammo.Value = 60;
+    pelaaja2.Weapon.FireRate = 3.0;
     pelaaja2.Weapon.IsVisible = false;
     pelaaja2.Weapon.X = 1.0;
     pelaaja2.Weapon.Y = 15.0;
@@ -171,10 +160,12 @@ void LuoPelaaja2(Vector paikka, double korkeus, double leveys)
 void LuoPelaaja3(Vector paikka, double korkeus, double leveys)
 {
     pelaaja3 = new PlatformCharacter(75.0, 75.0);
+    pelaaja3.Weapon.InfiniteAmmo = true;
     pelaaja3.Image = Pelaajankuva3;
     pelaaja3.Position = paikka;
     pelaaja3.Weapon = new AssaultRifle(50, 50);
     pelaaja3.Weapon.Ammo.Value = 60;
+    pelaaja3.Weapon.FireRate = 3.0;
     pelaaja3.Weapon.IsVisible = false;
     pelaaja3.Weapon.X = 1.0;
     pelaaja3.Weapon.Y = 15.0;
@@ -187,11 +178,13 @@ void LuoPelaaja3(Vector paikka, double korkeus, double leveys)
 void LuoPelaaja4(Vector paikka, double korkeus, double leveys)
 {
     pelaaja4 = new PlatformCharacter(75.0, 75.0);
+    pelaaja4.Weapon.InfiniteAmmo = true;
     pelaaja4.Image = Pelaajankuva4;
     pelaaja4.Position = paikka;
     pelaaja4.Weapon = new AssaultRifle(50, 50);
     pelaaja4.Weapon.Ammo.Value = 60;
     pelaaja4.Weapon.IsVisible = false;
+    pelaaja4.Weapon.FireRate = 3.0;
     pelaaja4.Weapon.X = 1.0;
     pelaaja4.Weapon.Y = 15.0;
     pelaaja4.Weapon.ProjectileCollision = AmmusOsui;
@@ -209,19 +202,13 @@ void AsetaOhjaimet()
 
     Keyboard.Listen(Key.S, ButtonState.Down, AmmuAseella, "Ammu", pelaaja1);
 
-    ;
-
-
     Keyboard.Listen(Key.Up, ButtonState.Down, Hyppy, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2);
 
-    
-   
     Keyboard.Listen(Key.Left, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa ylös", pelaaja2, nopeusVasen);
    
     Keyboard.Listen(Key.Right, ButtonState.Down, AsetaNopeus, "Pelaaja 2: Liikuta mailaa alas", pelaaja2, nopeusOikea);
 
     Keyboard.Listen(Key.Down, ButtonState.Down, AmmuAseella, "Ammu", pelaaja2);
-
 
     Keyboard.Listen(Key.I, ButtonState.Down, Hyppy, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3);
 
@@ -230,9 +217,6 @@ void AsetaOhjaimet()
     Keyboard.Listen(Key.L, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa alas", pelaaja3, nopeusOikea);
 
     Keyboard.Listen(Key.K, ButtonState.Down, AmmuAseella, "Ammu", pelaaja3);
-
-    
-
 
     Keyboard.Listen(Key.T, ButtonState.Down, Hyppy, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4);
 
@@ -275,10 +259,7 @@ void AmmusOsui(PhysicsObject ammus, PhysicsObject kohde)
 {
    
     ammus.Destroy();
-    //pelaaja1.Weapon.Destroy();
-   // pelaaja2.Weapon.Destroy();
-    //pelaaja3.Weapon.Destroy();
-    //pelaaja4.Weapon.Destroy();
+    
    
     if (kohde.Tag == "p1")
   

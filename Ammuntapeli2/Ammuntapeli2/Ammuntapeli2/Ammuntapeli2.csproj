@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{12B5EC75-7CC5-4E78-BD80-9758851AA584}</ProjectGuid>
+    <ProjectGuid>{AC90D3B6-09EB-498F-8557-B8375CCBBA03}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AmmuntaPeli</RootNamespace>
-    <AssemblyName>AmmuntaPeli</AssemblyName>
+    <RootNamespace>Ammuntapeli2</RootNamespace>
+    <AssemblyName>Ammuntapeli2</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>Reach</XnaProfile>
-    <XnaCrossPlatformGroupID>78b42fac-4946-40bc-9ea5-c7e7318c0d57</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>2aeb069e-31d3-4b64-81a7-366a81f7a0cf</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
@@ -110,10 +110,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="F:\Villen ohjelmointi\AmmuntaPeli.cs">
-      <Link>AmmuntaPeli.cs</Link>
-    </Compile>
     <Compile Include="Ohjelma.cs" />
+    <Compile Include="Ammuntapeli2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -121,8 +119,8 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmmuntaPeliContent\AmmuntaPeliContent.contentproj">
-      <Name>AmmuntaPeliContent</Name>
+    <ProjectReference Include="..\Ammuntapeli2Content\Ammuntapeli2Content.contentproj">
+      <Name>Ammuntapeli2Content</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
