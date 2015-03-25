@@ -23,12 +23,22 @@ public class Ammuntapeli2 : PhysicsGame
     Image Pelaajankuva4 = LoadImage("Pelaaja4");
     Image Tiilinkuva = LoadImage("Tiili");
     Image Taustakuva = LoadImage("War Game");
+    Image PointBlueCapturenKuva = LoadImage("PointBlueCapture");
+    Image PointRedCapturenKuva = LoadImage("PointRedCapture");
     Image PointNotCapturenKuva = LoadImage("PointNotCapture");
     Image Luotikuva = LoadImage("Luoti");
     //Image Pelaajankuva5 = LoadImage("Pelaaja5");
     Image Tiilin2kuva = LoadImage("Tiili2");
+    Image pelaajan1kavelu1 = LoadImage("Pelaaja1kavelu1");
+    Image pelaajan2kavelu = LoadImage("Pelaaja2kavelu");
+    Image pelaajan3kavelu = LoadImage("Pelaaja3kavelu");
+    Image pelaajan4kavelu = LoadImage("Pelaaja4kavelu");
 
+    SoundEffect captureAani = LoadSoundEffect("capture");
 
+    IntMeter pisteLaskuri;
+    IntMeter pisteLaskuri2;
+    PhysicsObject PointNotCapture;
 
     PlatformCharacter pelaaja1;
     PlatformCharacter pelaaja2;
@@ -40,6 +50,10 @@ public class Ammuntapeli2 : PhysicsGame
     PhysicsObject vasenReuna;
     PhysicsObject oikeaReuna;
     //PhysicsObject PointNotCapture;
+    private Image[] kaveluAnimaatio = LoadImages("Pelaaja1", "Pelaaja1kavelu1");
+    private Image[] kaveluAnimaatio2 = LoadImages("Pelaaja2", "Pelaaja2kavelu");
+    private Image[] kaveluAnimaatio3 = LoadImages("Pelaaja3", "Pelaaja3kavelu");
+    private Image[] kaveluAnimaatio4 = LoadImages("Pelaaja4", "Pelaaja4kavelu");
 
 
     public override void Begin()
@@ -47,6 +61,11 @@ public class Ammuntapeli2 : PhysicsGame
         IsFullScreen = true;
         LuoKentta();
         AsetaOhjaimet();
+        LuoPistelaskuri();
+       // LisaaLaskurit();
+        LuoPistelaskuri2();
+        
+        
 
     }
 
@@ -139,12 +158,78 @@ public class Ammuntapeli2 : PhysicsGame
 
     void LuoPointNotCapture(Vector paikka, double leveys, double korkeus)
    {
-        PhysicsObject PointNotCapture = PhysicsObject.CreateStaticObject(95,95);
+        PointNotCapture = PhysicsObject.CreateStaticObject(95,95);
         PointNotCapture.Position = paikka;
         PointNotCapture.Image = PointNotCapturenKuva;
         //PointNotCapture.CollisionIgnoreGroup = 1;
         Add(PointNotCapture);
+        AddCollisionHandler(PointNotCapture,PNCtormaa);
     }
+
+    void LuoPistelaskuri()
+    {
+        pisteLaskuri = new IntMeter(0);
+
+        Label pisteNaytto = new Label();
+        pisteNaytto.IntFormatString = "Pisteitä: {0:D1}";
+        pisteNaytto.X = Screen.Left + 100;
+        pisteNaytto.Y = Screen.Top - 100;
+        pisteNaytto.TextColor = Color.White;
+        pisteNaytto.Color = Color.Blue;
+
+        pisteNaytto.BindTo(pisteLaskuri);
+        Add(pisteNaytto);
+        pisteLaskuri.MaxValue = 100;
+        pisteLaskuri.UpperLimit += TiimiBlueVoittaa;
+        
+
+    }
+    void TiimiBlueVoittaa()
+    {
+        Label tekstikentta = new Label(1000,100," Pelaaja1 ja Pelaaja3 Voittaa!       pelaaja2 ja pelaaja 4 on surkeita  ");
+        Add(tekstikentta);
+        tekstikentta.TextColor = Color.Blue;
+        tekstikentta.Font = Font.DefaultLarge;
+        
+        
+
+    }
+
+    
+
+    void LuoPistelaskuri2()
+    {
+        pisteLaskuri2 = new IntMeter(0);
+
+        Label pisteNaytto2 = new Label();
+        pisteNaytto2.IntFormatString = "Pisteitä: {0:D1}";
+        pisteNaytto2.X = Screen.Right - 100;
+        pisteNaytto2.Y = Screen.Top - 100;
+        pisteNaytto2.TextColor = Color.White;
+        pisteNaytto2.Color = Color.Red;
+
+        pisteNaytto2.BindTo(pisteLaskuri2);
+        Add(pisteNaytto2);
+        pisteLaskuri2.MaxValue = 100;
+        pisteLaskuri2.UpperLimit += TiimiRedVoittaa;
+    }
+
+    void TiimiRedVoittaa()
+    {
+        Label tekstikentta2 = new Label(1000, 100, " Pelaaja2 ja Pelaaja4 Voittaa!       pelaaja1 ja pelaaja 3 on surkeita  ");
+        Add(tekstikentta2);
+        tekstikentta2.TextColor = Color.Red;
+        tekstikentta2.Font = Font.DefaultLarge;
+
+
+
+    }
+    
+      
+
+    
+
+
 
 
     void LuoPelaaja1(Vector paikka, double korkeus, double leveys)
@@ -166,6 +251,10 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja1alku = paikka;
         pelaaja1.Weapon.ProjectileCollision = AmmusOsui;
         pelaaja1.CollisionIgnoreGroup = 1;
+
+        pelaaja1.AnimWalk = new Animation(kaveluAnimaatio);
+        pelaaja1.AnimWalk.FPS = 5;
+        //pelaaja1.WalkOnAir = false;
     }
 
     void LuoPelaaja2(Vector paikka, double korkeus, double leveys)
@@ -187,6 +276,9 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja2.Weapon.ProjectileCollision = AmmusOsui;
         pelaaja2.CollisionIgnoreGroup = 2;
 
+        pelaaja2.AnimWalk = new Animation(kaveluAnimaatio2);
+        pelaaja2.AnimWalk.FPS = 5;
+
     }
 
     void LuoPelaaja3(Vector paikka, double korkeus, double leveys)
@@ -207,6 +299,9 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja3alku = paikka;
         pelaaja3.Weapon.ProjectileCollision = AmmusOsui;
         pelaaja3.CollisionIgnoreGroup = 1;
+
+        pelaaja3.AnimWalk = new Animation(kaveluAnimaatio3);
+        pelaaja3.AnimWalk.FPS = 5;
     }
     void LuoPelaaja4(Vector paikka, double korkeus, double leveys)
     {
@@ -224,6 +319,9 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja4alku = paikka;
         pelaaja4.Weapon.ProjectileCollision = AmmusOsui;
         pelaaja4.CollisionIgnoreGroup = 2;
+
+        pelaaja4.AnimWalk = new Animation(kaveluAnimaatio4);
+        pelaaja4.AnimWalk.FPS = 5;
     }
 
     
@@ -309,24 +407,69 @@ public class Ammuntapeli2 : PhysicsGame
         if (kohde.Tag == "p1")
         {
             kohde.Position = pelaaja1alku;
+            pisteLaskuri2.Value += 1;
+            
+            
         }
         if (kohde.Tag == "p2")
+
         {
             kohde.Position = pelaaja2alku;
+            pisteLaskuri.Value += 1;
         }
         if (kohde.Tag == "p3")
         {
             kohde.Position = pelaaja3alku;
+            pisteLaskuri2.Value += 1;
         }
         if (kohde.Tag == "p4")
         {
-            kohde.Position = pelaaja4alku; 
+            kohde.Position = pelaaja4alku;
+            pisteLaskuri.Value += 1;
         }
+
+    }
+    void PNCtormaa(PhysicsObject PNC, PhysicsObject Ukko)
+    {
+        if (Ukko.Tag == "p1")
+        {
+            Ukko.Position = pelaaja1alku;
+            pisteLaskuri.Value += 5;
+            captureAani.Play();
+            PointNotCapture.Image = PointBlueCapturenKuva;
+
+        }
+
+        if (Ukko.Tag == "p2")
+        {
+            Ukko.Position = pelaaja2alku;
+            pisteLaskuri2.Value += 5;
+            captureAani.Play();
+            PointNotCapture.Image = PointRedCapturenKuva;
+        }
+
+        if (Ukko.Tag == "p3")
+        {
+            Ukko.Position = pelaaja3alku;
+            pisteLaskuri.Value += 5;
+            captureAani.Play();
+            PointNotCapture.Image = PointBlueCapturenKuva;
+        }
+
+        if (Ukko.Tag == "p4")
+        {
+            Ukko.Position = pelaaja4alku;
+            pisteLaskuri2.Value += 5;
+            captureAani.Play();
+            PointNotCapture.Image = PointRedCapturenKuva;
+        }
+
+
+
     }
 
 
-
-    //      PhysicsObject Pelaaja1 = new PhysicsObject( 40, 20 );
+//      PhysicsObject Pelaaja1 = new PhysicsObject( 40, 20 );
     //Pelaaja1.Shape = Shape.Rectangle;
     //Add(Pelaaja1);
     // TODO: Kirjoita ohjelmakoodisi tähän
