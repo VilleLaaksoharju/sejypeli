@@ -35,6 +35,7 @@ public class Ammuntapeli2 : PhysicsGame
     Image pelaajan4kavelu = LoadImage("Pelaaja4kavelu");
 
     SoundEffect captureAani = LoadSoundEffect("capture");
+    SoundEffect hyppyAani = LoadSoundEffect("hyppy");
 
     IntMeter pisteLaskuri;
     IntMeter pisteLaskuri2;
@@ -51,9 +52,24 @@ public class Ammuntapeli2 : PhysicsGame
     PhysicsObject oikeaReuna;
     //PhysicsObject PointNotCapture;
     private Image[] kaveluAnimaatio = LoadImages("Pelaaja1", "Pelaaja1kavelu1");
+    private Image[] paikallaanAnimaatio = LoadImages("Pelaaja1");
+    private Image[] hyppyAnimaatio = LoadImages("pelaaja1hyppy");
+    private Image[] laskeutumisAnimaatio = LoadImages("pelaaja1hyppy2");
+
     private Image[] kaveluAnimaatio2 = LoadImages("Pelaaja2", "Pelaaja2kavelu");
+    private Image[] paikallaanAnimaatio2 = LoadImages("Pelaaja2");
+    private Image[] hyppyAnimaatio2 = LoadImages("pelaaja2hyppy");
+    private Image[] laskeutumisAnimaatio2 = LoadImages("pelaaja2hyppy2");
+
     private Image[] kaveluAnimaatio3 = LoadImages("Pelaaja3", "Pelaaja3kavelu");
+    private Image[] paikallaanAnimaatio3 = LoadImages("Pelaaja3");
+    private Image[] hyppyAnimaatio3 = LoadImages("pelaaja3hyppy");
+    private Image[] laskeutumisAnimaatio3 = LoadImages("pelaaja3hyppy2");
+
     private Image[] kaveluAnimaatio4 = LoadImages("Pelaaja4", "Pelaaja4kavelu");
+    private Image[] paikallaanAnimaatio4 = LoadImages("Pelaaja4");
+    private Image[] hyppyAnimaatio4 = LoadImages("pelaaja4hyppy");
+    private Image[] laskeutumisAnimaatio4 = LoadImages("pelaaja4hyppy2");
 
 
     public override void Begin()
@@ -66,14 +82,15 @@ public class Ammuntapeli2 : PhysicsGame
         LuoPistelaskuri2();
         
         
+        
 
     }
 
     void LuoKentta()
     {
         MultiSelectWindow alkuValikko = new MultiSelectWindow("Ammunta Peli",
-    "Taisteluun>:)", "Parhaat pisteet :P ", "Poistu Pelistä >:(");
-        alkuValikko.Color = Color.Blue;
+    "Taisteluun", "Poistut pelistä Jos painat ESC (PELI KUITENKIN ALKAA JOS PAINAT TÄSTÄ)");
+        alkuValikko.Color = Color.Gray;
 
 
         Add(alkuValikko);
@@ -237,13 +254,18 @@ public class Ammuntapeli2 : PhysicsGame
 
         pelaaja1 = new PlatformCharacter(75.0, 75.0);
         pelaaja1.Weapon = new AssaultRifle(50, 50);
+        
        // pelaaja1.Weapon.InfiniteAmmo = true;
         pelaaja1.Weapon.IsVisible = false;
         pelaaja1.Weapon.X = 1.0;
         pelaaja1.Weapon.FireRate = 3.0;
         pelaaja1.Weapon.Y = 15.0;
-        
+
+        Grenade kranaatti = new Grenade(4.0);
+
         pelaaja1.Weapon.CanHitOwner = false;
+
+       // pelaaja1.Granade = new Granade(4.0);
         pelaaja1.Image = Pelaajankuva1;
         pelaaja1.Position = paikka;
         pelaaja1.Tag = "p1";
@@ -253,7 +275,10 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja1.CollisionIgnoreGroup = 1;
 
         pelaaja1.AnimWalk = new Animation(kaveluAnimaatio);
-        pelaaja1.AnimWalk.FPS = 5;
+        pelaaja1.AnimIdle = new Animation(paikallaanAnimaatio);
+        pelaaja1.AnimJump = new Animation(hyppyAnimaatio);
+        pelaaja1.AnimFall = new Animation(laskeutumisAnimaatio);
+        pelaaja1.AnimWalk.FPS = 100;
         //pelaaja1.WalkOnAir = false;
     }
 
@@ -277,7 +302,11 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja2.CollisionIgnoreGroup = 2;
 
         pelaaja2.AnimWalk = new Animation(kaveluAnimaatio2);
-        pelaaja2.AnimWalk.FPS = 5;
+        pelaaja2.AnimIdle = new Animation(paikallaanAnimaatio2);
+        pelaaja2.AnimJump = new Animation(hyppyAnimaatio2);
+        pelaaja2.AnimFall = new Animation(laskeutumisAnimaatio2);
+
+        pelaaja2.AnimWalk.FPS = 100;
 
     }
 
@@ -301,7 +330,10 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja3.CollisionIgnoreGroup = 1;
 
         pelaaja3.AnimWalk = new Animation(kaveluAnimaatio3);
-        pelaaja3.AnimWalk.FPS = 5;
+        pelaaja3.AnimIdle = new Animation(paikallaanAnimaatio3);
+        pelaaja3.AnimJump = new Animation(hyppyAnimaatio3);
+        pelaaja3.AnimFall = new Animation(laskeutumisAnimaatio3);
+        pelaaja3.AnimWalk.FPS = 100;
     }
     void LuoPelaaja4(Vector paikka, double korkeus, double leveys)
     {
@@ -321,13 +353,17 @@ public class Ammuntapeli2 : PhysicsGame
         pelaaja4.CollisionIgnoreGroup = 2;
 
         pelaaja4.AnimWalk = new Animation(kaveluAnimaatio4);
-        pelaaja4.AnimWalk.FPS = 5;
+        pelaaja4.AnimIdle = new Animation(paikallaanAnimaatio4);
+        pelaaja4.AnimJump = new Animation(hyppyAnimaatio4);
+        pelaaja4.AnimFall = new Animation(laskeutumisAnimaatio4);
+        pelaaja4.AnimWalk.FPS = 100;
     }
 
     
 
     void AsetaOhjaimet()
     {
+
         Keyboard.Listen(Key.W, ButtonState.Down, Hyppy, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1);
 
         Keyboard.Listen(Key.A, ButtonState.Down, AsetaNopeus, "Pelaaja 1: Liikuta mailaa ylös", pelaaja1, nopeusVasen);
@@ -350,24 +386,24 @@ public class Ammuntapeli2 : PhysicsGame
         Keyboard.Listen(Key.Down, ButtonState.Down, AmmuAseella, "Ammu", pelaaja2);
 
 
-        Keyboard.Listen(Key.I, ButtonState.Down, Hyppy, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3);
+        Keyboard.Listen(Key.T, ButtonState.Down, Hyppy, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3);
 
-        Keyboard.Listen(Key.J, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3, nopeusVasen);
+        Keyboard.Listen(Key.F, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa ylös", pelaaja3, nopeusVasen);
 
-        Keyboard.Listen(Key.L, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa alas", pelaaja3, nopeusOikea);
+        Keyboard.Listen(Key.H, ButtonState.Down, AsetaNopeus, "Pelaaja 3: Liikuta mailaa alas", pelaaja3, nopeusOikea);
 
-        Keyboard.Listen(Key.K, ButtonState.Down, AmmuAseella, "Ammu", pelaaja3);
-
-
+        Keyboard.Listen(Key.G, ButtonState.Down, AmmuAseella, "Ammu", pelaaja3);
 
 
-        Keyboard.Listen(Key.T, ButtonState.Down, Hyppy, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4);
 
-        Keyboard.Listen(Key.F, ButtonState.Down, AsetaNopeus, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4, nopeusVasen);
 
-        Keyboard.Listen(Key.H, ButtonState.Down, AsetaNopeus, "Pelaaja 4: Liikuta mailaa alas", pelaaja4, nopeusOikea);
+        Keyboard.Listen(Key.I, ButtonState.Down, Hyppy, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4);
 
-        Keyboard.Listen(Key.G, ButtonState.Down, AmmuAseella, "Ammu", pelaaja4);
+        Keyboard.Listen(Key.J, ButtonState.Down, AsetaNopeus, "Pelaaja 4: Liikuta mailaa ylös", pelaaja4, nopeusVasen);
+
+        Keyboard.Listen(Key.L, ButtonState.Down, AsetaNopeus, "Pelaaja 4: Liikuta mailaa alas", pelaaja4, nopeusOikea);
+
+        Keyboard.Listen(Key.K, ButtonState.Down, AmmuAseella, "Ammu", pelaaja4);
 
 
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
@@ -467,6 +503,11 @@ public class Ammuntapeli2 : PhysicsGame
 
 
     }
+
+
+   
+
+    
 
 
 //      PhysicsObject Pelaaja1 = new PhysicsObject( 40, 20 );
